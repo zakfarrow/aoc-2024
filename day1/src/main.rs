@@ -22,7 +22,7 @@ fn format_input(path: &str) -> io::Result<Vec<Vec<u32>>> {
     Ok(vec![col1, col2])
 }
 
-fn compute_total_distance(data: Vec<Vec<u32>>) -> u32 {
+fn compute_total_distance(data: &Vec<Vec<u32>>) -> u32 {
     let mut total_distance: u32 = 0;
     for i in 0..data[0].len() {
         let difference: i32 = (data[0][i] as i32) - (data[1][i] as i32);
@@ -31,11 +31,23 @@ fn compute_total_distance(data: Vec<Vec<u32>>) -> u32 {
     total_distance
 }
 
+fn compute_similarity_score(data: &Vec<Vec<u32>>) -> u32 {
+    let mut similarity_score: u32 = 0;
+
+    for &i in data[0].iter() {
+        let count = data[1].iter().filter(|&&x| x == i).count() as u32;
+        similarity_score += i * count;
+    }
+    similarity_score
+}
+
 fn main() {
     match format_input("input.txt") {
         Ok(formatted_data) => {
-            let total_distance = compute_total_distance(formatted_data);
-            println!("Total distance: {}", total_distance);
+            let difference = compute_total_distance(&formatted_data);
+            println!("Total difference: {}", difference);
+            let similarity_score = compute_similarity_score(&formatted_data);
+            println!("Similarity score: {}", similarity_score);
         }
         Err(e) => println!("Error: {}", e),
     }
